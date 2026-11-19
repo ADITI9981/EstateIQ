@@ -1,0 +1,30 @@
+{
+    "source": "Wasalt",
+    "source_url": "https://wasalt.sa/en/property/rent/villa-250-sqm-facing-south-with-9-bedrooms-5891036",
+    "listing_id": "5891036",
+    "retrieved_at_utc": "2026-11-19T08:03:26.144335+00:00",
+    "title": "Villa 250 SQM Facing South with 9 Bedrooms",
+    "property_type": "Villa",
+    "transaction_type": "Rent",
+    "bedrooms": "9",
+    "bathrooms": "6",
+    "area_sqm": 250.0,
+    "location": {
+        "street": "An-Narjis",
+        "city": "Riyadh",
+        "region": "North Riyadh",
+        "country": "Saudi Arabia"
+    },
+    "price": 120000,
+    "price_currency": "SAR",
+    "price_period": "year",
+    "price_source_label": "SAR /Year - One payment",
+    "payment_options": {
+    "one_payment": 120000,
+    "two_payments": 125000,
+    "currency": "SAR",
+    "period": "year"
+},
+    "image_url": "https://imagedelivery.net/1DNKFJPRaeUdy_j8F7HT3w/production/properties/5891036/images/67a6dbcc-a6a9-41a5-a4e4-2b395def6d8b.jpg/quality=50,w=480",
+    "description": "فيلا للإيجار حي النرجس الدور : دور أرضي - أول - ثاني الموقع : الرياض حي النرجس الواجهة : جنوبية 15م المساحة : 250 تقريباً العمر : 14 سنة تقريباً عبارة عن : الدور الأول : صالة واسعة + محلس نساء + مقلط + مجلس رجال + مطبخ داخلي + مطبخ خارجي + ملحق خارجي + مدخل سيارة . الدور الثاني : 4 غرف 2 منهم ماستر وحدة معه غرفة ملابس + + صالة واسعة مع ركن مطبخ . الدور الثالث : سطح واسع + غرفة خادمة مع دورة مياه + مستودع + مكان للغسيل . مجموع دورات المياه : 6 ( سيتم إزالة الأثاث عند التأجير ) مطبخ راكب ✅ 14 مكيفات سبيلت راكبة ✅ 2 مكيف شباك راكبة ✅ باب قراش ✅ عداد كهرب خاص ✅ حوش ✅ سطح ✅ عداد ماء مستقل ✅ الصرف الصحي و الماء ✅ صندوق الإنترنت ✅ السعر : 125 ألف دفعتين 120 ألف دفعة"
+}

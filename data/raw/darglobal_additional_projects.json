@@ -1,0 +1,94 @@
+[
+  {
+    "document_type": "development",
+    "source": "DarGlobal",
+    "source_url": "https://darglobal.co.uk/projects/properties-in-uae",
+    "project_id": "DARGLOBAL-DG1",
+    "title": "DG1",
+    "developer": "DarGlobal",
+    "property_type": "Residential Development",
+    "location": {
+      "city": "Dubai",
+      "country": "United Arab Emirates"
+    },
+    "status": null,
+    "unit_types": null,
+    "bedrooms": null,
+    "area_sqm": null,
+    "expected_completion": null,
+    "gross_development_value": null,
+    "description": "DG1 is a DarGlobal residential development listed in the company's official UAE project portfolio.",
+    "additional_details": "Specific unit configurations, pricing, amenities and current completion details have not been verified.",
+    "retrieved_at_utc": "2026-11-19",
+    "collection_method": "Publicly indexed official DarGlobal project portfolio."
+  },
+  {
+    "document_type": "development",
+    "source": "DarGlobal",
+    "source_url": "https://darglobal.co.uk/projects/properties-in-uae",
+    "project_id": "DARGLOBAL-DAVINCI",
+    "title": "Da Vinci Tower, Interiors by Pagani",
+    "developer": "DarGlobal",
+    "property_type": "Branded Residential Tower",
+    "location": {
+      "city": "Dubai",
+      "country": "United Arab Emirates"
+    },
+    "status": null,
+    "unit_types": null,
+    "bedrooms": null,
+    "area_sqm": null,
+    "expected_completion": null,
+    "gross_development_value": null,
+    "description": "Da Vinci Tower is a DarGlobal project in Dubai featuring a design collaboration with Pagani.",
+    "additional_details": "Specific unit configurations, pricing, amenities and current completion details have not been verified.",
+    "retrieved_at_utc": "2026-11-19",
+    "collection_method": "Publicly indexed official DarGlobal project portfolio."
+  },
+  {
+    "document_type": "development",
+    "source": "DarGlobal",
+    "source_url": "https://darglobal.co.uk/projects/properties-in-uae",
+    "project_id": "DARGLOBAL-URBAN-OASIS",
+    "title": "Urban Oasis by Missoni",
+    "developer": "DarGlobal",
+    "property_type": "Branded Residential Tower",
+    "location": {
+      "city": "Dubai",
+      "country": "United Arab Emirates"
+    },
+    "status": null,
+    "unit_types": null,
+    "bedrooms": null,
+    "area_sqm": null,
+    "expected_completion": null,
+    "gross_development_value": null,
+    "description": "Urban Oasis is a DarGlobal development in Dubai associated with the Missoni brand.",
+    "additional_details": "Specific unit configurations, pricing and current availability have not been verified.",
+    "retrieved_at_utc": "2026-11-19",
+    "collection_method": "Publicly indexed official DarGlobal project portfolio."
+  },
+  {
+    "document_type": "development",
+    "source": "DarGlobal",
+    "source_url": "https://darglobal.co.uk/projects/properties-in-uae",
+    "project_id": "DARGLOBAL-W-RESIDENCES",
+    "title": "W Residences",
+    "developer": "DarGlobal",
+    "property_type": "Branded Residential Development",
+    "location": {
+      "city": "Dubai",
+      "country": "United Arab Emirates"
+    },
+    "status": null,
+    "unit_types": null,
+    "bedrooms": null,
+    "area_sqm": null,
+    "expected_completion": null,
+    "gross_development_value": null,
+    "description": "W Residences is a DarGlobal residential project listed in its official Dubai and UAE portfolio.",
+    "additional_details": "Specific unit configurations, pricing, amenities and current completion details have not been verified.",
+    "retrieved_at_utc": "2026-11-19",
+    "collection_method": "Publicly indexed official DarGlobal project portfolio."
+  }
+]

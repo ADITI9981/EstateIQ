@@ -1,0 +1,49 @@
+
+[
+  {
+    "document_type": "development",
+    "source": "DarGlobal",
+    "source_url": "https://darglobal.co.uk/the-astera",
+    "project_id": "DARGLOBAL-ASTERA",
+    "title": "The Astera, Interiors by Aston Martin",
+    "developer": "DarGlobal",
+    "property_type": "Beach Residences and Villas",
+    "location": {
+      "city": "Al Marjan Island, Ras Al Khaimah",
+      "country": "United Arab Emirates"
+    },
+    "status": "Under Development",
+    "unit_types": "1 to 3-bedroom residences and 3-bedroom beach villas",
+    "bedrooms": "1 to 3-bedroom residences; 3-bedroom beach villas",
+    "area_sqm": "61 to 265",
+    "expected_completion": "December 2028",
+    "gross_development_value": null,
+    "description": "The Astera is a luxury beachfront residential development on Al Marjan Island in Ras Al Khaimah. The project features interiors by Aston Martin and offers beach residences and villas.",
+    "additional_details": "Amenities listed include direct beach access, premium 24/7 security, fitness centre, spa, infinity pool, sauna, indoor cinema, yoga lawn and kids play area.",
+    "retrieved_at_utc": "2026-11-19",
+    "collection_method": "Publicly indexed official DarGlobal content; direct automated page access was blocked by Imperva."
+  },
+  {
+    "document_type": "development",
+    "source": "DarGlobal",
+    "source_url": "https://darglobal.co.uk/press/dar-global-expands-saudi-arabia-portfolio-with-new-jeddah-development-valued-at-sar-1-billion",
+    "project_id": "DARGLOBAL-JEDDAH-2026",
+    "title": "New Jeddah Mixed-Use Development",
+    "developer": "DarGlobal",
+    "property_type": "Mixed-Use Development",
+    "location": {
+      "city": "Jeddah",
+      "country": "Saudi Arabia"
+    },
+    "status": "Announced",
+    "unit_types": "Not yet disclosed",
+    "bedrooms": null,
+    "area_sqm": null,
+    "expected_completion": null,
+    "gross_development_value": "Approximately SAR 1 billion (USD 267 million)",
+    "description": "DarGlobal announced plans for a new mixed-use development in Jeddah, Saudi Arabia, on 16 November 2026. The announcement describes the development as an exclusive co-branded residential concept introducing a new international luxury brand to Jeddah.",
+    "additional_details": "The land was acquired for approximately USD 56 million. Further architectural concept, residential offering and official launch details are yet to be announced.",
+    "retrieved_at_utc": "2026-11-19",
+    "collection_method": "Publicly indexed official DarGlobal press release; direct automated page access was blocked by Imperva."
+  }
+]
