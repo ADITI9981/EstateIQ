@@ -2,9 +2,10 @@
 import json
 from pathlib import Path
 
-import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
+import joblib
+from scipy.sparse import save_npz
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 from backend.ingest import load_property_data
 
@@ -12,54 +13,59 @@ from backend.ingest import load_property_data
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 VECTOR_DIR = PROJECT_ROOT / "vector_store"
 
-INDEX_PATH = VECTOR_DIR / "estateiq.faiss"
+VECTORIZER_PATH = VECTOR_DIR / "tfidf_vectorizer.joblib"
+MATRIX_PATH = VECTOR_DIR / "tfidf_matrix.npz"
 METADATA_PATH = VECTOR_DIR / "metadata.json"
-
-MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 
 def build_vector_index():
-    # Step 1: Load searchable property documents
+    # Step 1: Load searchable documents
     documents = load_property_data()
 
     if not documents:
         raise ValueError("No property documents found.")
 
-    texts = [document["content"] for document in documents]
+    texts = [
+        document["content"]
+        for document in documents
+    ]
 
-    # Step 2: Load the multilingual embedding model
-    print("Loading embedding model...")
-    model = SentenceTransformer(MODEL_NAME)
+    # Step 2: Create a multilingual-friendly character TF-IDF vectorizer
+    print("Creating TF-IDF vectorizer...")
 
-    # Step 3: Convert text into numerical vectors
-    print("Generating embeddings...")
-    embeddings = model.encode(
-        texts,
-        convert_to_numpy=True,
-        normalize_embeddings=True
+    vectorizer = TfidfVectorizer(
+        analyzer="char_wb",
+        ngram_range=(2, 5),
+        min_df=1,
+        max_features=100000,
+        sublinear_tf=True,
+        dtype=np.float32
     )
 
-    embeddings = np.asarray(embeddings, dtype="float32")
+    # Step 3: Convert documents into sparse numerical vectors
+    print("Generating TF-IDF matrix...")
 
-    # Step 4: Create FAISS index
-    dimension = embeddings.shape[1]
-    index = faiss.IndexFlatIP(dimension)
+    matrix = vectorizer.fit_transform(texts)
 
-    # Step 5: Add embeddings to FAISS
-    index.add(embeddings)
-
-    # Step 6: Save index and associated metadata
+    # Step 4: Save index and metadata
     VECTOR_DIR.mkdir(parents=True, exist_ok=True)
 
-    faiss.write_index(index, str(INDEX_PATH))
+    joblib.dump(vectorizer, VECTORIZER_PATH)
+    save_npz(MATRIX_PATH, matrix)
 
     with open(METADATA_PATH, "w", encoding="utf-8") as file:
-        json.dump(documents, file, ensure_ascii=False, indent=4)
+        json.dump(
+            documents,
+            file,
+            ensure_ascii=False,
+            indent=4
+        )
 
-    print("\nVector index created successfully!")
-    print(f"Documents indexed: {index.ntotal}")
-    print(f"Embedding dimensions: {dimension}")
-    print(f"Index saved at: {INDEX_PATH}")
+    print("\nTF-IDF index created successfully!")
+    print(f"Documents indexed: {matrix.shape[0]}")
+    print(f"Features generated: {matrix.shape[1]}")
+    print(f"Vectorizer saved at: {VECTORIZER_PATH}")
+    print(f"Matrix saved at: {MATRIX_PATH}")
     print(f"Metadata saved at: {METADATA_PATH}")
 
 

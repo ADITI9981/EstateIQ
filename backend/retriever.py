@@ -2,60 +2,93 @@
 import json
 from pathlib import Path
 
-import faiss
-from sentence_transformers import SentenceTransformer
+import joblib
+from scipy.sparse import load_npz
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 VECTOR_DIR = PROJECT_ROOT / "vector_store"
 
-INDEX_PATH = VECTOR_DIR / "estateiq.faiss"
+VECTORIZER_PATH = VECTOR_DIR / "tfidf_vectorizer.joblib"
+MATRIX_PATH = VECTOR_DIR / "tfidf_matrix.npz"
 METADATA_PATH = VECTOR_DIR / "metadata.json"
-
-MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 
 class PropertyRetriever:
 
     def __init__(self):
-        print("Loading vector index...")
-        self.index = faiss.read_index(str(INDEX_PATH))
+        print("Loading TF-IDF index...")
+
+        if not VECTORIZER_PATH.exists():
+            raise FileNotFoundError(
+                "TF-IDF vectorizer not found. Run python -m backend.indexer first."
+            )
+
+        if not MATRIX_PATH.exists():
+            raise FileNotFoundError(
+                "TF-IDF matrix not found. Run python -m backend.indexer first."
+            )
+
+        if not METADATA_PATH.exists():
+            raise FileNotFoundError(
+                "Document metadata not found. Run python -m backend.indexer first."
+            )
+
+        self.vectorizer = joblib.load(VECTORIZER_PATH)
+        self.matrix = load_npz(MATRIX_PATH)
 
         with open(METADATA_PATH, "r", encoding="utf-8") as file:
             self.documents = json.load(file)
 
-        print("Loading embedding model...")
-        self.model = SentenceTransformer(MODEL_NAME)
+        if self.matrix.shape[0] != len(self.documents):
+            raise ValueError(
+                "TF-IDF matrix and document metadata counts do not match."
+            )
 
         print("Property retriever is ready!")
-
+        print(f"Documents available: {len(self.documents)}")
     def infer_filters(self, query):
-        """
-        Identify explicit filters from the user's question.
-        """
+        """Identify explicit filters from the user's question."""
 
         query_lower = query.lower()
-
         filters = {}
 
         # Source filtering
         if "darglobal" in query_lower:
             filters["source"] = "DarGlobal"
-
         elif "wasalt" in query_lower:
             filters["source"] = "Wasalt"
 
-        # Document type filtering
+        # Property listing keywords
         property_terms = [
-            "villa", "apartment", "flat", "bedroom",
-            "bathroom", "rental", "rent", "property listing"
-        ]
+            "available properties",
+            "available property",
+            "property listing",
+            "property listings",
+            "properties",
+            "property",
+            "villa",
+            "apartment",
+            "flat",
+            "bedroom",
+            "bathroom",
+            "rental",
+            "rent",
+            "for sale",
+            "for rent"
+       ]
 
+        # Development project keywords
         development_terms = [
-            "development project", "developer project",
-            "darglobal project", "projects", "development"
-        ]
+            "development project",
+            "developer project",
+            "darglobal project",
+            "projects",
+            "development"
+       ]
 
+        # Identify document type
         if any(term in query_lower for term in property_terms):
             filters["document_type"] = "property"
 
@@ -65,19 +98,15 @@ class PropertyRetriever:
         # Project status filtering
         if "under development" in query_lower:
             filters["status"] = "Under Development"
-
         elif "announced" in query_lower:
             filters["status"] = "Announced"
 
         return filters
 
     def matches_filters(self, metadata, filters):
-        """
-        Check whether a document satisfies all inferred filters.
-        """
+        """Check whether a document satisfies all inferred filters."""
 
         for field, expected_value in filters.items():
-
             actual_value = metadata.get(field)
 
             if actual_value is None:
@@ -87,44 +116,79 @@ class PropertyRetriever:
                 return False
 
         return True
-
     def search(self, query, top_k=3):
-        """
-        Perform semantic search with metadata filtering.
-        """
+        """Retrieve exact matches first and support broad listing queries."""
 
         if not query or not query.strip():
             return []
 
-        # Convert the question into an embedding
-        query_embedding = self.model.encode(
-            [query],
-            convert_to_numpy=True,
-            normalize_embeddings=True
-        ).astype("float32")
+        query_lower = query.lower().strip()
 
-        # Search all available documents
-        total_documents = len(self.documents)
+        # Apply metadata filters
+        filters = self.infer_filters(query)
 
-        scores, indices = self.index.search(
-            query_embedding,
-            total_documents
+        # Detect broad listing requests
+        broad_query_terms = [
+            "show me",
+            "list all",
+            "all projects",
+            "all properties",
+            "available projects",
+            "available properties",
+            "what projects",
+            "which projects",
+            "dar global projects",
+            "darglobal projects",
+            "wasalt properties",
+        ]
+
+        is_broad_query = any(
+            term in query_lower for term in broad_query_terms
         )
 
-        # Infer filters from the question
-        filters = self.infer_filters(query)
+        # Broad queries should return all matching indexed records
+        result_limit = len(self.documents) if is_broad_query else top_k
+
+        # Exact project/property name matching
+        exact_matches = []
+
+        for document in self.documents:
+            metadata = document["metadata"]
+            title = metadata.get("title", "").lower().strip()
+
+            if not title:
+                continue
+
+            if title in query_lower:
+                if self.matches_filters(metadata, filters):
+                    exact_matches.append({
+                        "similarity_score": 1.0,
+                        "content": document["content"],
+                        "metadata": metadata
+                    })
+
+        # Return exact matches before semantic search
+        if exact_matches:
+            return exact_matches[:result_limit]
+
+        # Normal TF-IDF search
+        query_vector = self.vectorizer.transform([query])
+
+        scores = cosine_similarity(
+            query_vector,
+            self.matrix
+        ).flatten()
 
         results = []
 
-        for score, index in zip(scores[0], indices[0]):
+        for document_index, score in enumerate(scores):
 
-            if index == -1:
+            if score <= 0:
                 continue
 
-            document = self.documents[index]
+            document = self.documents[document_index]
             metadata = document["metadata"]
 
-            # Apply metadata filters
             if not self.matches_filters(metadata, filters):
                 continue
 
@@ -134,13 +198,13 @@ class PropertyRetriever:
                 "metadata": metadata
             })
 
-        # Sort by semantic similarity
         results.sort(
             key=lambda item: item["similarity_score"],
             reverse=True
         )
 
-        return results[:top_k]
+        return results[:result_limit]
+
 
 
 if __name__ == "__main__":
@@ -151,7 +215,9 @@ if __name__ == "__main__":
         "What is The Astera and where is it located?",
         "What is DarGlobal developing in Jeddah?",
         "Find a 9-bedroom villa in Riyadh",
-        "Which DarGlobal projects are under development?"
+        "Which DarGlobal projects are under development?",
+        "Tell me about Da Vinci Tower by Pagani",
+        "What is Urban Oasis by Missoni?"
     ]
 
     for question in questions:
